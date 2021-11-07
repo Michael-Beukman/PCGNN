@@ -1,0 +1,13 @@
+\begin{tabular}{lllll}
+\toprule
+{} & NoveltyNEAT (Ours) &                         DirectGA With Novelty &                                   DirectGA  &                              PCGRL (Turtle) \\
+\midrule
+CompressionDistanceMetric &       - | Pn=0.88  &      Pt= 0.03 | Pm= 0.03 | Pn= 0.20 | D= 1.56 &    Pt= 0.05 | Pm= 0.06 | Pn= 0.37 | D= 1.34 &    Pt= 0.00 | Pm= 0.01 | Pn= 0.01 | D= 5.23 \\
+LeniencyMetric            &       - | Pn=0.77  &      Pt= 0.01 | Pm= 0.01 | Pn= 0.63 | D=-2.52 &    Pt= 0.01 | Pm= 0.01 | Pn= 0.32 | D=-2.39 &    Pt= 0.49 | Pm= 0.42 | Pn= 0.51 | D=-0.40 \\
+SolvabilityMetric         &       - | Pn=1.0   &      Pt= 0.02 | Pm= 0.02 | Pn= 0.00 | D= -inf &    Pt=  nan | Pm= 1.00 | Pn= 1.00 | D=  nan &    Pt= 0.27 | Pm= 0.07 | Pn= 0.01 | D= -inf \\
+Train Time (s)            &       - | Pn=0.97  &     Pt= 0.00 | Pm= 0.01 | Pn= 0.21 | D=-61.33 &   Pt= 0.00 | Pm= 0.01 | Pn= 0.31 | D=-61.33 &   Pt= 0.00 | Pm= 0.01 | Pn= 0.48 | D=221.43 \\
+Generation Time (s)       &       - | Pn=0.81  &  Pt= 0.00 | Pm= 0.00 | Pn= 0.61 | D=194882.17 &  Pt= 0.00 | Pm= 0.00 | Pn= 0.54 | D=8204.31 &  Pt= 0.05 | Pm= 0.00 | Pn= 0.01 | D=6425.73 \\
+AStarDiversityMetric      &       - | Pn=0.07  &      Pt= 0.19 | Pm= 0.40 | Pn= 0.00 | D= 0.79 &    Pt= 0.19 | Pm= 0.40 | Pn= 0.91 | D= 0.79 &    Pt= 0.04 | Pm= 0.01 | Pn= 0.64 | D= 1.45 \\
+AStarDifficultyMetric     &       - | Pn=0.3   &      Pt= 0.07 | Pm= 0.06 | Pn= 0.44 | D= 1.23 &    Pt= 0.08 | Pm= 0.09 | Pn= 0.01 | D= 1.18 &    Pt= 0.04 | Pm= 0.06 | Pn= 0.48 | D= 1.44 \\
+\bottomrule
+\end{tabular}

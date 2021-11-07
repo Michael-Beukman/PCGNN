@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH -N 1
+#SBATCH -t 72:00:00
+#SBATCH -J infer_pcgrl
+#SBATCH -o /home/NAME/PATH_TO_ROOT/src/logs/pipelines/infer_pcgrl.%N.%j.out
+
+source ~/.bashrc
+cd /home/NAME/PATH_TO_ROOT/src
+conda activate pcgrl
+echo "Doing PCGRL INFER"
+echo "COPYING"
+mkdir -p /tmp//NAME//
+rsync -r --progress /home/NAME/PATH_TO_ROOT/src/external/gym-pcgrl/runs/all_pcgrl_1007 /tmp//NAME//
+echo "DONE COPYING"
+./run.sh analysis/pcgrl/infer_pcgrl.py
+rm -rf /tmp//NAME//

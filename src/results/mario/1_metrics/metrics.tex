@@ -1,0 +1,16 @@
+\begin{tabular}{lllll}
+\toprule
+{} &        NEAT (204e) &                    Default DirectGA &                          PCGRL (Wide) &                 Optimised DirectGA \\
+\midrule
+SolvabilityMetric                          &        0.98 (0.02) &     $\textbf{+1.0 (0.0)}^{\dagger}$ &     $\textbf{+0.73 (0.03)}^{\dagger}$ &                       +0.99 (0.01) \\
+CompressionDistanceMetric                  &        0.64 (0.12) &                          0.55 (0.0) &                            0.78 (0.0) &                         0.67 (0.0) \\
+CompressionDistanceMetric CombinedFeatures &         0.45 (0.1) &                          0.46 (0.0) &                            0.56 (0.0) &                         0.55 (0.0) \\
+CompressionDistanceMetric FlatMario        &        0.86 (0.02) &   $\textbf{0.73 (0.0)}^{**\dagger}$ &                            0.87 (0.0) &  $\textbf{0.76 (0.0)}^{**\dagger}$ \\
+LeniencyMetric                             &        0.17 (0.23) &    $\textbf{+1.0 (0.0)}^{*\dagger}$ &                          +0.47 (0.01) &                       +0.31 (0.01) \\
+AStarDiversityMetric                       &        0.06 (0.01) &    $\textbf{0.02 (0.0)}^{*\dagger}$ &     $\textbf{0.11 (0.01)}^{*\dagger}$ &                         0.05 (0.0) \\
+AStarDifficultyMetric                      &        0.23 (0.06) &                         +0.27 (0.0) &                          +0.28 (0.01) &  $\textbf{+0.14 (0.01)}^{\dagger}$ \\
+AStarEditDistanceDiversityMetric           &        0.38 (0.11) &   $\textbf{0.09 (0.01)}^{*\dagger}$ &      $\textbf{0.55 (0.01)}^{\dagger}$ &                         0.33 (0.0) \\
+Generation Time (s)                        &        0.08 (0.01) &  $\textbf{1.78 (0.02)}^{**\dagger}$ &     $\textbf{+0.98 (1.1)}^{*\dagger}$ &  $\textbf{0.55 (0.0)}^{**\dagger}$ \\
+Train Time (s)                             &  11592.86 (346.68) &    $\textbf{0.0 (0.0)}^{**\dagger}$ &  $\textbf{+259200.0 (0.0)}^{\dagger}$ &   $\textbf{0.0 (0.0)}^{**\dagger}$ \\
+\bottomrule
+\end{tabular}

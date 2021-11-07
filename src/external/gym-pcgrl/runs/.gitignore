@@ -1,0 +1,5 @@
+**/*.csv
+**/*tfevents*
+
+*turtle_good*/**/*.pkl
+**/smb_turtle_5_log_100000.0_seed_1/best_model.pkl

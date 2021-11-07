@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH -N 1
+#SBATCH -t 72:00:00
+#SBATCH -J pcgrl_binary-wide-1
+#SBATCH -o /home/NAME/PATH_TO_ROOT/src/slurms/logs/all_pcgrl/pcgrl_binary_wide_1.%N.%j.out
+
+source ~/.bashrc
+cd /home/NAME/PATH_TO_ROOT/src/external/gym-pcgrl
+conda activate pcgrl
+echo "Hello, we are doing a job now, binary, wide, with seed =  1"
+./run.sh train.py binary wide 1

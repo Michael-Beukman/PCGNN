@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH -N 1
+#SBATCH -t 72:00:00
+#SBATCH -J 201_2_pipe
+#SBATCH -o /home/NAME/PATH_TO_ROOT/src/logs/pipelines/v201_2.%N.%j.out
+
+source ~/.bashrc
+cd /home/NAME/PATH_TO_ROOT/src
+conda activate noveltyneatpcg
+echo "Doing V201 2 - DirectGA Novelty"
+./run.sh runs/proper_experiments/v200_mario/v201_vanilla_ga_gridsearch.py 2

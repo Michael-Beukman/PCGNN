@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH -N 1
+#SBATCH -t 72:00:00
+#SBATCH -J for_mario_pipe
+#SBATCH -o /home/NAME/PATH_TO_ROOT/src/logs/pipelines/vfor_mario1.%N.%j.out
+
+source ~/.bashrc
+cd /home/NAME/PATH_TO_ROOT/src
+conda activate noveltyneatpcg
+echo "Doing for mario 1"
+time ./run.sh analysis/proper_experiments/v200/for_mario_generation_1.py

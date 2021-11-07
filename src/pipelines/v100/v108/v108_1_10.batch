@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH -N 1
+#SBATCH -t 72:00:00
+#SBATCH -J 108_1_10
+#SBATCH -o /home/NAME/PATH_TO_ROOT/src/logs/pipelines/108_1_10.%N.%j.out
+
+source ~/.bashrc
+cd /home/NAME/PATH_TO_ROOT/src
+conda activate noveltyneatpcg
+echo "Doing V108_1_10"
+./run.sh runs/proper_experiments/v100_maze/v108.py 1 10

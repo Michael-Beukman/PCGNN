@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH -N 1
+#SBATCH -t 72:00:00
+#SBATCH -J final_analysis_pipe
+#SBATCH -o /home/NAME/PATH_TO_ROOT/src/logs/pipelines/final_analysis.%N.%j.out
+
+source ~/.bashrc
+cd /home/NAME/PATH_TO_ROOT/src/pipelines
+conda activate noveltyneatpcg
+echo "Doing Analysis"
+./finalise_analysis.sh

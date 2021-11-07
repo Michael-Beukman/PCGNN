@@ -1,0 +1,13 @@
+\begin{tabular}{lllll}
+\toprule
+{} & NoveltyNEAT (Ours) &                 DirectGA With Novelty &                           DirectGA  &                            PCGRL (Turtle) \\
+\midrule
+CompressionDistanceMetric &        0.49 (0.01) &       $\textbf{0.49 (0.0)}^{\dagger}$ &                          0.49 (0.0) &        $\textbf{+0.51 (0.01)}^{*\dagger}$ \\
+LeniencyMetric            &        0.73 (0.06) &     $\textbf{0.59 (0.02)}^{*\dagger}$ &    $\textbf{0.6 (0.01)}^{*\dagger}$ &                               0.71 (0.02) \\
+SolvabilityMetric         &          1.0 (0.0) &      $\textbf{+0.99 (0.0)}^{\dagger}$ &                           1.0 (0.0) &                              +0.95 (0.08) \\
+Train Time (s)            &   8857.85 (144.43) &      $\textbf{0.0 (0.0)}^{**\dagger}$ &    $\textbf{0.0 (0.0)}^{**\dagger}$ &  $\textbf{40838.04 (495.81)}^{**\dagger}$ \\
+Generation Time (s)       &         0.01 (0.0) &  $\textbf{181.89 (1.73)}^{**\dagger}$ &  $\textbf{7.66 (0.07)}^{**\dagger}$ &         $\textbf{+6.0 (5.49)}^{*\dagger}$ \\
+AStarDiversityMetric      &        0.07 (0.06) &                          +0.11 (0.01) &                         0.11 (0.01) &                               0.15 (0.01) \\
+AStarDifficultyMetric     &        0.08 (0.07) &                           0.17 (0.01) &                        +0.16 (0.02) &                               0.18 (0.03) \\
+\bottomrule
+\end{tabular}
