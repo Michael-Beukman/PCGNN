@@ -714,7 +714,7 @@ def v420_exp_108():
         plt.plot(all_gens, list_of_means, label=name)
         plt.fill_between(all_gens, list_of_means - list_of_stds, list_of_means + list_of_stds, alpha=0.5)
     
-    plot_thing(neat_results, 'NEAT')
+    plot_thing(neat_results, 'NoveltyNEAT (Ours)')
     plot_thing(direct_results, 'DirectGA+')
     plt.xlabel("Number of generations")
     plt.ylabel("Generation Time (s)")
