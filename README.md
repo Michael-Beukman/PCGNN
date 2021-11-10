@@ -141,7 +141,7 @@ Our results that were shown and mentioned in the report are mainly found in `src
 The following describes how to reproduce our results.
 
 
-The whole process contains 3 steps, and does assume a [Slurm](https://slurm.schedmd.com/documentation.html) based cluster scheduler. Please also change the logfile locations (look at running `src/pipelines/replace_all_paths.sh` after changing paths in there -  this updates all paths, and decompresses some results). Our partition name was `batch`, so this also potentially needs to be updated in the scripts.
+The whole process contains 3 steps, and does assume a [Slurm](https://slurm.schedmd.com/documentation.html) based cluster scheduler. Please also change the logfile locations (look at running `src/pipelines/replace_all_paths.sh` **from the repository root** after changing paths in there -  this updates all paths, and decompresses some results). Our partition name was `batch`, so this also potentially needs to be updated in the Slurm scripts.
 
 You need to run the following three scripts, in order, and before you start the next one, all the jobs from the previous one must have finished.
 
@@ -202,7 +202,7 @@ Note: The models for turtle (both Mario and Maze) were too large for Github and 
 
 # Assorted
 ## Metrics
-We also introduce 2 metrics to measure the diversity and difficulty of levels using A* agents. The code for these metrics are in `metrics/a_star/a_star_metrics.py`. We also experimented with using RL agents to measure the above metric, and results looked promising, but the implementation posed some challenges. Feel free to look in `metrics/rl/tabular/rl_agent_metric.py`, `metrics/rl/tabular/tabular_rl_agent.py` and `metrics/rl/tabular/rl_difficulty_metric.py`.
+We also introduce 2 metrics to measure the diversity and difficulty of levels using A* agents. The code for these metrics are in `metrics/a_star/a_star_metrics.py`. We also experimented with using RL agents to measure the above characteristics, and results looked promising, but the implementation posed some challenges. Feel free to look in `metrics/rl/tabular/rl_agent_metric.py`, `metrics/rl/tabular/tabular_rl_agent.py` and `metrics/rl/tabular/rl_difficulty_metric.py` for this code.
 
 ## Island Models
 There is also some code (not thoroughly tested) that uses multiple island populations and performs regular migration between them and these can be found in `novelty_neat/mario/test/island_mario.py`, `novelty_neat/maze/test/island_model.py` and `src/runs/proper_experiments/v200_mario/v203_island_neat.py`.
