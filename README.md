@@ -6,16 +6,16 @@
   - [File Structure](#file-structure)
   - [Explanation](#explanation)
   - [Get started](#get-started)
-  - [Entrypoints](#entrypoints)
+  - [Entry Points](#entry-points)
     - [Generate Levels.](#generate-levels)
     - [Playing Levels](#playing-levels)
-  - [Experiments](#experiments)
-    - [Reproducing](#reproducing)
 - [Features](#features)
   - [Works for Tilemaps](#works-for-tilemaps)
   - [Generates arbitrary sized levels without retraining](#generates-arbitrary-sized-levels-without-retraining)
     - [Mario](#mario)
     - [Maze](#maze)
+- [Experiments](#experiments)
+    - [Reproducing](#reproducing)
 - [Assorted](#assorted)
   - [Metrics](#metrics)
   - [Island Models](#island-models)
@@ -44,12 +44,12 @@ Most code in here can be categorised into 3 main archetypes:
 Most of these are relative to `./src`
 ```
 Method Code
+├── novelty_neat     -> Our actual method
+├── main
 ├── baselines
 ├── games
 ├── common
-├── novelty_neat
 ├── metrics
-├── main
 
 Instrumental
 ├── experiments
@@ -94,7 +94,9 @@ Use it like: `conda create -f env.yml`. There is also another environment that i
 
 For full functionality, you will also need java installed. The `openjdk 16.0.1 2021-04-20` version worked well.
 
-## Entrypoints
+Additionally, most of the actual experiments used [Weights & Biases](https://wandb.ai/) to log experiments and results, so you would also need to log in using your credentials. The simple entry points described below should not require it.
+
+## Entry Points
 At the moment, the easiest way to interact with the codebase would be to use the code in `src/main/`.
 ### Generate Levels.
 To have a go at generating levels, then you can use the functions provided in `src/main/main.py`. Specifically you can call this (remember to be in the `src` directory before running these commands):
@@ -115,8 +117,35 @@ Or you can let an A* agent play it using
 ```
 ./run.sh main/main.py --game mario --command play-agent --filename test_level.txt
 ```
+# Features
+## Works for Tilemaps
+<p align='center'>
+<img src='src/results/v400/examples/maze_normal/NoveltyNEAT%20%28Ours%29/1.png' width="250" height="250" >
+<img src='src/results/v400/examples/maze_normal/NoveltyNEAT%20%28Ours%29/2.png' width="250" height="250" >
+<img src='src/results/v400/examples/maze_normal/NoveltyNEAT%20%28Ours%29/4.png' width="250" height="250" >
+</p>
 
-## Experiments
+![Mario](src/results/v400/examples/mario_normal/NoveltyNEAT%20%28Ours%29/3.png)
+![Mario](src/results/v400/examples/mario_normal/NoveltyNEAT%20%28Ours%29/2.png)
+
+## Generates arbitrary sized levels without retraining
+### Mario
+![Mario-28](src/results/mario/206/line_graph/levels_neat/28-0.png)
+![Mario-56](src/results/mario/206/line_graph/levels_neat/56-0.png)
+![Mario-114](src/results/mario/206/line_graph/levels_neat/114-0.png)
+![Mario-228](src/results/mario/206/line_graph/levels_neat/228-0.png)
+### Maze
+
+
+
+<p align="center">
+<img src='src/results/maze/104/line_graph/levels/10-4.png' width="250" height="250">
+<img src='src/results/maze/104/line_graph/levels/30-4.png' width="250" height="250"><br>
+<img src='src/results/maze/104/line_graph/levels/60-4.png' width="250" height="250">
+<img src='src/results/maze/104/line_graph/levels/100-4.png' width="250" height="250"><br>
+</p>
+
+# Experiments
 We have many different experiments, with the following meaning:
 
 Generalisation - Generate Larger levels
@@ -172,33 +201,6 @@ For the PCGRL inference, there are two steps to do, specifically:
 
 
 Note: The models for turtle (both Mario and Maze) were too large for Github and are thus not included here, but wide is.
-# Features
-## Works for Tilemaps
-<p align='center'>
-<img src='src/results/v400/examples/maze_normal/NoveltyNEAT%20%28Ours%29/1.png' width="250" height="250" >
-<img src='src/results/v400/examples/maze_normal/NoveltyNEAT%20%28Ours%29/2.png' width="250" height="250" >
-<img src='src/results/v400/examples/maze_normal/NoveltyNEAT%20%28Ours%29/4.png' width="250" height="250" >
-</p>
-
-![Mario](src/results/v400/examples/mario_normal/NoveltyNEAT%20%28Ours%29/3.png)
-![Mario](src/results/v400/examples/mario_normal/NoveltyNEAT%20%28Ours%29/2.png)
-
-## Generates arbitrary sized levels without retraining
-### Mario
-![Mario-28](src/results/mario/206/line_graph/levels_neat/28-0.png)
-![Mario-56](src/results/mario/206/line_graph/levels_neat/56-0.png)
-![Mario-114](src/results/mario/206/line_graph/levels_neat/114-0.png)
-![Mario-228](src/results/mario/206/line_graph/levels_neat/228-0.png)
-### Maze
-
-
-
-<p align="center">
-<img src='src/results/maze/104/line_graph/levels/10-4.png' width="250" height="250">
-<img src='src/results/maze/104/line_graph/levels/30-4.png' width="250" height="250"><br>
-<img src='src/results/maze/104/line_graph/levels/60-4.png' width="250" height="250">
-<img src='src/results/maze/104/line_graph/levels/100-4.png' width="250" height="250"><br>
-</p>
 
 # Assorted
 ## Metrics
