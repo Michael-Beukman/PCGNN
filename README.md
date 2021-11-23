@@ -21,6 +21,7 @@
   - [Island Models](#island-models)
 - [Other repositories and projects used](#other-repositories-and-projects-used)
   - [Some ideas from here](#some-ideas-from-here)
+- [Acknowledgements](#acknowledgements)
 
 <p align='center'>
 <img src='src/results/v400/examples/Mario2_small.gif'>
@@ -221,3 +222,6 @@ These can be found in `src/external`. We did edit and adapt some of the code, bu
 
 
 And some snippets from Stack Overflow, which I've tried to reference where they were used.
+
+# Acknowledgements
+This work is based on the research supported wholly by the National Research Foundation of South Africa (Grant UID 133358).
