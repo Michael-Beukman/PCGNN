@@ -110,9 +110,9 @@ def get_mario_202_data(return_alls2=False, return_parents=False):
     return alls
 
 mapping = {
-    'CompressionDistanceMetric': "Normal",
+    'CompressionDistanceMetric': "Concatenated",
     'CompressionDistanceMetric_FlatMario': "Flat",
-    'CompressionDistanceMetric_CombinedFeatures': "Combined"
+    'CompressionDistanceMetric_CombinedFeatures': "Normal"
 }
 
 def v452_b_cd_size_dependent_with_direct_ga_get_data():
@@ -198,9 +198,9 @@ def v453_cd_dependent_on_representation():
         plt.close()
     
     keys_to_consider = [
+        'CompressionDistanceMetric_CombinedFeatures',
         'CompressionDistanceMetric',
         'CompressionDistanceMetric_FlatMario',
-        'CompressionDistanceMetric_CombinedFeatures'
     ]
 
     palette = dict(zip(map(lambda M: clean_metric(mapping[M]), keys_to_consider), sns.color_palette(n_colors=len(keys_to_consider))))

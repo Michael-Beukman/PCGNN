@@ -391,6 +391,12 @@ def general_thing(name_to_save_as: str, metric_names_to_use: List[str], alternat
             dic_of_mean_stds, dic_of_all_values = get_all_results_from_methods_maze()
         else:
             dic_of_mean_stds, dic_of_all_values = get_all_results_from_methods_mario()
+        
+        if game == "Mario" and name_to_save_as == 'cd':
+            for k in dic_of_all_values:
+                # Set this so that we use the correct CD metric, i.e. combined
+                dic_of_all_values[k]['CompressionDistanceMetric'] = dic_of_all_values[k]['CompressionDistanceMetric CombinedFeatures']
+                
         for metric_name_to_use, alternative in zip(metric_names_to_use, alternatives):
             metric_values_to_compare_against = dic_of_all_values[DEFAULT_MONIKER].get(
                 metric_name_to_use, [-1] * 5)
