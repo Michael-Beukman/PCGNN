@@ -30,7 +30,7 @@
 ## About
 This is a research project for a BSc (Hons) degree at the University of the Witwatersrand, Johannesburg. It's about combining novelty search and NeuroEvolution of Augmenting Topologies (NEAT) for procedural level generation. This repo contains our code as well as the final report.
 
-If you just want to get started generating or playing levels, then please look at [how to generate levels](#generate-levels), the [examples](#works-for-tilemaps) or the [report](https://github.com/Michael-Beukman/PCGNN/tree/main/doc/report.pdf).
+If you just want to get started generating or playing levels, then please look at [how to generate levels](#generate-levels), the [examples](#works-for-tilemaps) , the [report](https://github.com/Michael-Beukman/PCGNN/tree/main/doc/report.pdf) or a [poster](https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf) that summarises our approach.
 ## General structure
 The main structure of the code is (hopefully) somewhat understandable.
 First of all, to run any python file in here, use `./run.sh path/to/python/file` instead of using `python` directly, because otherwise modules are not recognised.
