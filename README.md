@@ -1,6 +1,5 @@
 # PCGNN - Procedural Content Generation with NEAT and Novelty
 - [PCGNN - Procedural Content Generation with NEAT and Novelty](#pcgnn---procedural-content-generation-with-neat-and-novelty)
-  - [Disclaimer](#disclaimer)
   - [About](#about)
   - [General structure](#general-structure)
   - [File Structure](#file-structure)
@@ -27,8 +26,7 @@
 <img src='src/results/v400/examples/Mario2_small.gif'>
 </p>
 
-## Disclaimer
-This is currently a work in progress.
+
 ## About
 This is a research project for a BSc (Hons) degree at the University of the Witwatersrand, Johannesburg. It's about combining novelty search and NeuroEvolution of Augmenting Topologies (NEAT) for procedural level generation. This repo contains our code as well as the final report.
 
