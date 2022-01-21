@@ -206,7 +206,7 @@ Note: The models for turtle (both Mario and Maze) were too large for Github and 
 We also introduce 2 metrics to measure the diversity and difficulty of levels using A* agents. The code for these metrics are in `metrics/a_star/a_star_metrics.py`. 
 
 
-Some of the metrics code can also be found in
+Applying the metrics code to levels is done in (among others) `src/runs/proper_experiments/v300_metrics`.
 
 
 We also experimented with using RL agents to measure the above characteristics, and results looked promising, but the implementation posed some challenges. 
