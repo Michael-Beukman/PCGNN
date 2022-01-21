@@ -10,6 +10,16 @@ class MazeGame(Game):
     Simple Maze Game.
     Some inspiration for rewards from here: https://www.samyzaf.com/ML/rl/qmaze.html
     """
+    
+    def reset(self, level: Level):
+        """Resets this env given the level. The player now starts at the original spot again.
+
+        Args:
+            level (Level): The level to use.
+        """
+        self.level = level
+        self.current_pos = level.start
+        
     def __init__(self, level: Level):
         super().__init__(level)
     
@@ -36,7 +46,9 @@ class MazeGame(Game):
             is_bad = 1
         self.current_pos = new_pos
         # If at the end
-        if np.all(self.current_pos == np.array([self.level.width-1, self.level.height-1])):
+        # if np.all(self.current_pos == np.array([self.level.width-1, self.level.height-1])):
+        # Use the level's end position instead of (-1, -1)
+        if np.all(self.current_pos == np.array(self.level.end)):
             return True, 1000
         else:
             # -1 living reward.

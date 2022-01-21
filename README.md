@@ -28,9 +28,9 @@
 
 
 ## About
-This is a research project for a BSc (Hons) degree at the University of the Witwatersrand, Johannesburg. It's about combining novelty search and NeuroEvolution of Augmenting Topologies (NEAT) for procedural level generation. This repo contains our code as well as the final report.
+This is a research project for a BSc (Hons) degree at the University of the Witwatersrand, Johannesburg. It's about combining novelty search and NeuroEvolution of Augmenting Topologies (NEAT) for procedural level generation. We also investigate two new [metrics](#metrics) for evaluating the diversity and difficulty of levels. This repo contains our code as well as the final report.
 
-If you just want to get started generating or playing levels, then please look at [how to generate levels](#generate-levels) or the [examples](#works-for-tilemaps). Also feel free to look at the [report](https://github.com/Michael-Beukman/PCGNN/tree/main/doc/report.pdf) or a [poster](https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf) that summarises our approach.
+If you just want to get started generating or playing levels, then please look at [how to generate levels](#generate-levels) or the [examples](#works-for-tilemaps). Also feel free to look at the [report](https://github.com/Michael-Beukman/PCGNN/tree/main/doc/report.pdf) or a [poster](https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf) that summarises our approach. For information about the metrics and how to use them, see [here](#metrics).
 ## General structure
 The main structure of the code is (hopefully) somewhat understandable.
 First of all, to run any python file in here, use `./run.sh path/to/python/file` instead of using `python` directly, because otherwise modules are not recognised.
@@ -203,7 +203,20 @@ Note: The models for turtle (both Mario and Maze) were too large for Github and 
 
 # Assorted
 ## Metrics
-We also introduce 2 metrics to measure the diversity and difficulty of levels using A* agents. The code for these metrics are in `metrics/a_star/a_star_metrics.py`. We also experimented with using RL agents to measure the above characteristics, and results looked promising, but the implementation posed some challenges. Feel free to look in `metrics/rl/tabular/rl_agent_metric.py`, `metrics/rl/tabular/tabular_rl_agent.py` and `metrics/rl/tabular/rl_difficulty_metric.py` for this code.
+We also introduce 2 metrics to measure the diversity and difficulty of levels using A* agents. The code for these metrics are in `metrics/a_star/a_star_metrics.py`. 
+
+
+Some of the metrics code can also be found in
+
+
+We also experimented with using RL agents to measure the above characteristics, and results looked promising, but the implementation posed some challenges. 
+
+Feel free to look in 
+- `metrics/rl/tabular/rl_agent_metric.py`
+- `metrics/rl/tabular/tabular_rl_agent.py`
+- `metrics/rl/tabular/rl_difficulty_metric.py` 
+
+for this code.
 
 ## Island Models
 There is also some code (not thoroughly tested) that uses multiple island populations and performs regular migration between them and these can be found in `novelty_neat/mario/test/island_mario.py`, `novelty_neat/maze/test/island_model.py` and `src/runs/proper_experiments/v200_mario/v203_island_neat.py`.
@@ -213,6 +226,7 @@ These can be found in `src/external`. We did edit and adapt some of the code, bu
 - [Mario-AI-Framework](https://github.com/amidos2006/Mario-AI-Framework) -> Simulate Mario, implement our metrics.
 - [PCG Evaluation](http://sokath.com/fdg2014_pcg_evaluation/) -> Compare against leniency
 - [CS229Mario](http://code.google.com/p/cs229mario) -> RL agent for Mario.
+- [Personal-Maze](https://github.com/mwmancuso/Personal-Maze) -> Maze generator according to difficulty.
 
 ## Some ideas from here
 - https://github.com/MattChanTK/gym-maze

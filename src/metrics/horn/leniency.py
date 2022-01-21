@@ -137,24 +137,28 @@ class LeniencyMetric(Metric):
         for level in levels:
             labelled: np.ndarray = morph.label(level.map + 1, connectivity=1)
             # Only consider cells that are connected to the start.
-            labelled[labelled != labelled[0, 0]] = 0
-            labelled[labelled == labelled[0, 0]] = 1
+            sy, sx = level.start[::-1]
+            ey, ex = level.end[::-1]
+            
+            labelled[labelled != labelled[sy, sx]] = 0
+            labelled[labelled == labelled[sy, sx]] = 1
 
-            if labelled[0, 0] != labelled[-1, -1]:
+            if labelled[sy, sx] != labelled[ey, ex]:
                 # If not solvable, then this doesn't make sense.
                 final_answers.append(0)
                 continue
             coords = np.argwhere(labelled == 1)
             non_blocked = 0
             # x, y
-            goal = (labelled.shape[1] - 1, labelled.shape[0] - 1)
+            goal = level.end
+            
             for row, column in coords:
-                if row == 0 and column == 0 or row == goal[1] and column == goal[0]:
+                if row == sy and column == sx or row == ey and column == ex:
                     # Don't focus on start and end.
                     non_blocked += 1
                     continue
                 temp = labelled.copy()
-                path = shortest_path(temp, (0, 0), (column, row), 0)
+                path = shortest_path(temp, level.start, (column, row), 0)
                 assert path is not None
                 # Now clear the path, excluding the last node.
                 for x, y in path[:-1]:
