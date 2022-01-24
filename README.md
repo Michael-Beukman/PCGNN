@@ -1,7 +1,7 @@
 # PCGNN - Procedural Content Generation with NEAT and Novelty
 
 <p align="center">
-<a href="#explanation">Generation Approach</a> &mdash; <a href="#metrics">Metrics</a> &mdash; <a href="#paper">Paper</a> &mdash; <a href="#poster">Poster</a> &mdash; <a href="#features">Examples</a> 
+<a href="#explanation">Generation Approach</a> &mdash; <a href="#metrics">Metrics</a> &mdash; <a href="https://github.com/Michael-Beukman/PCGNN/tree/main/doc/report.pdf">Paper</a> &mdash; <a href="https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf">Poster</a> &mdash; <a href="#features">Examples</a> 
 </p>
 
 - [PCGNN - Procedural Content Generation with NEAT and Novelty](#pcgnn---procedural-content-generation-with-neat-and-novelty)
