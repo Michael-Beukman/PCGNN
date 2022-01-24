@@ -1,4 +1,9 @@
 # PCGNN - Procedural Content Generation with NEAT and Novelty
+
+<p align="center">
+<a href="#explanation">Generation Approach</a> &mdash; <a href="#metrics">Metrics</a> &mdash; <a href="#paper">Paper</a> &mdash; <a href="#poster">Poster</a> &mdash; <a href="#features">Examples</a> 
+</p>
+
 - [PCGNN - Procedural Content Generation with NEAT and Novelty](#pcgnn---procedural-content-generation-with-neat-and-novelty)
   - [About](#about)
   - [General structure](#general-structure)
@@ -15,8 +20,13 @@
     - [Maze](#maze)
 - [Experiments](#experiments)
     - [Reproducing](#reproducing)
+- [Metrics](#metrics)
+  - [A* Diversity Metric](#a-diversity-metric)
+    - [Largely Similar levels](#largely-similar-levels)
+    - [Different Levels](#different-levels)
+    - [All paths](#all-paths)
+  - [A* Difficulty](#a-difficulty)
 - [Assorted](#assorted)
-  - [Metrics](#metrics)
   - [Island Models](#island-models)
 - [Other repositories and projects used](#other-repositories-and-projects-used)
   - [Some ideas from here](#some-ideas-from-here)
@@ -201,10 +211,46 @@ For the PCGRL inference, there are two steps to do, specifically:
 
 Note: The models for turtle (both Mario and Maze) were too large for Github and are thus not included here, but wide is.
 
-# Assorted
-## Metrics
+# Metrics
 We also introduce 2 metrics to measure the diversity and difficulty of levels using A* agents. The code for these metrics are in `metrics/a_star/a_star_metrics.py`. 
 
+## A* Diversity Metric
+The A* diversity metric uses the trajectory of the agent on two levels to evaluate the diversity. Levels that are solved using different paths are marked as diverse, whereas levels with similar paths are marked as similar.
+
+### Largely Similar levels
+Diversity = 0.08
+<p align="center">
+  <img alt="Left" src="src/results/v400/presentation_plots/diversity_showcase/1.png" width="45%">
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img alt="Right" src="src/results/v400/presentation_plots/diversity_showcase/2.png" width="45%">
+</p>
+
+### Different Levels
+Diversity = 0.27
+<p align="center">
+  <img alt="Left" src="src/results/v400/presentation_plots/diversity_showcase/0.png" width="45%">
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img alt="Right" src="src/results/v400/presentation_plots/diversity_showcase/2.png" width="45%">
+</p>
+
+### All paths
+
+<p align="center">
+<img src='src/results/v400/presentation_plots/diversity_showcase/all.png'>
+</p>
+The green and orange paths are quite similar, leading to low diversity
+
+
+----
+
+## A* Difficulty
+This metric measures how much of the search tree of an A* agent needs to be expanded before the agent can solve the level - more expansion indicates more exploration is required and that the level is more difficult.
+
+<p align="center">
+  <img alt="Left" src="src/results/v400/presentation_plots/difficulty_showcase/1.png" width="45%">
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img alt="Right" src="src/results/v400/presentation_plots/difficulty_showcase/10.png" width="45%">
+</p>
 
 Applying the metrics code to levels is done in (among others) `src/runs/proper_experiments/v300_metrics`.
 
@@ -218,6 +264,7 @@ Feel free to look in
 
 for this code.
 
+# Assorted
 ## Island Models
 There is also some code (not thoroughly tested) that uses multiple island populations and performs regular migration between them and these can be found in `novelty_neat/mario/test/island_mario.py`, `novelty_neat/maze/test/island_model.py` and `src/runs/proper_experiments/v200_mario/v203_island_neat.py`.
 # Other repositories and projects used
