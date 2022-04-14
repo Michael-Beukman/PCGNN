@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from common.utils import get_only_solvable_metrics, get_latest_folder
+from common.utils import METHOD_NAME, get_latest_folder, get_only_solvable_metrics, mysavefig
 from experiments.config import Config
 from games.game import Game
 from games.level import Level
@@ -23,14 +23,14 @@ from games.maze.maze_game import MazeGame
 from games.maze.maze_level import MazeLevel
 from metrics.a_star.a_star_metrics import AStarDifficultyMetric, AStarDiversityAndDifficultyMetric, AStarDiversityMetric
 import matplotlib.patches as mpatches
-from scipy.stats import shapiro, mannwhitneyu, ttest_ind
-
+from scipy.stats import shapiro, mannwhitneyu, ttest_ind, kruskal
 from novelty_neat.maze.a_star import do_astar_from_level
+from statsmodels.sandbox.stats.multicomp import multipletests
 
 DIR_TO_SAVE = 'results/v400/methods/'
 os.makedirs(DIR_TO_SAVE, exist_ok=True)
 
-DEFAULT_MONIKER = 'NoveltyNEAT (Ours)'
+DEFAULT_MONIKER = METHOD_NAME
 
 
 MARIO_RESULTS_FILE = get_latest_folder('results/mario/metrics_and_levels/*/data.p')
@@ -39,6 +39,8 @@ MAZE_RESULTS_FILE = get_latest_folder('results/maze/metrics_and_levels/*/data.p'
 MARIO_202_RUNS = get_latest_folder('../results/experiments/experiment_202/runs/*/data.p')
 MAZE_106_METRICS_FILE = get_latest_folder('../results/experiments/106/runs/*/data.p')
 
+RANDOM_FILE_MAZE  = get_latest_folder("../results/experiments/experiment_581_a/Maze/RandomBaseline/*")    +"/*/*.p"
+RANDOM_FILE_MARIO = get_latest_folder("../results/experiments/582_a/Mario/RandomBaseline/*")              + "/*/*.p"
 
 def pretty_key(k):
     if 'time' in k:
@@ -47,7 +49,8 @@ def pretty_key(k):
 
 
 def clean_metric(m):
-    if 'AStarEditDistanceDiversityMetric' in m: return m.replace('AStarEditDistanceDiversityMetric', "A* Diversity (Edit)")
+    # if 'AStarEditDistanceDiversityMetric' in m: return m.replace('AStarEditDistanceDiversityMetric', "A* Diversity (Edit)")
+    if 'AStarEditDistanceDiversityMetric' in m: return m.replace('AStarEditDistanceDiversityMetric', "A* Diversity")
     m = m.replace('Metric', '').replace("AStar", "A*")
     splitted = re.sub('([A-Z][a-z]+)', r' \1',
                       re.sub('([A-Z]+)', r' \1', m)).split()
@@ -72,7 +75,7 @@ def mean_std(v, decimals = 2):
 def make_nice(s):
     name = s
     if 'neat_best_0815' in s or 'experiment_105' in s or 'experiment_204e' in s:
-        return 'NoveltyNEAT (Ours)'
+        return METHOD_NAME
 
     if '201_a' in name:
         return "DirectGA+"
@@ -118,6 +121,7 @@ def order_columns_of_df(df, rows=False):
         # (3, "DirectGA With NoveltyV2"),
         (4, "PCGRL (Wide)"),
         (5, "PCGRL (Turtle)"),
+        (6, "Random"),
     ]
     if rows:
         print(df.index)
@@ -232,6 +236,25 @@ def get_all_results_from_methods_maze(return_levels=False, return_all_of_the_res
     for FILE in FILES:
         with open(FILE, 'rb') as f:
             all_dics |= pickle.load(f)
+    # Add in random baselines
+    all_dics['Random'] = []
+    proper_random_dic = {'names': [], 'results_single': {}, 'results_all': {'generation_time': [], 'train_time': []}}
+    for random_file in glob.glob(RANDOM_FILE_MAZE):
+        proper_random_dic['names'].append(random_file)
+        with open(random_file, 'rb') as f:
+            dic = pickle.load(f)
+            proper_random_dic['results_all']['generation_time'].append(dic['generation_time'])
+            proper_random_dic['results_all']['train_time'].append(dic['train_time'])
+            for SS in ['results_single', 'results_all']:
+                
+                for key, v in dic['eval_'+SS].items():
+                    if key not in proper_random_dic[SS]:
+                        proper_random_dic[SS][key] = []
+                    proper_random_dic[SS][key].append(v)
+        
+                    
+        all_dics['Random'] = proper_random_dic
+            
     dic = all_dics
     overall_dic_for_stats_test = {}
     dic_of_levels = {}
@@ -244,8 +267,9 @@ def get_all_results_from_methods_maze(return_levels=False, return_all_of_the_res
                 continue
             little_d = {}
             stats_d = {}
-            dic[single_run] = clean_the_single_results_of_one_run(
-                dic[single_run])
+            if single_run != 'Random':
+                dic[single_run] = clean_the_single_results_of_one_run(
+                    dic[single_run])
             single_results = dic[single_run]['results_single']
             
             results_all = dic[single_run]['results_all']
@@ -302,6 +326,27 @@ def get_all_results_from_methods_mario(return_levels=False, return_all_of_the_re
     for FILE in FILES:
         with open(FILE, 'rb') as f:
             all_dics |= pickle.load(f)
+
+    # Add in random baselines
+    all_dics['Random'] = []
+    proper_random_dic = {'names': [], 'results_single': {}, 'results_all': {'generation_time': [], 'train_time': []}}
+    for random_file in glob.glob(RANDOM_FILE_MARIO):
+        proper_random_dic['names'].append(random_file)
+        with open(random_file, 'rb') as f:
+            dic = pickle.load(f)
+            proper_random_dic['results_all']['generation_time'].append(dic['generation_time'])
+            proper_random_dic['results_all']['train_time'].append(dic['train_time'])
+            for SS in ['results_single', 'results_all']:
+                for key, v in dic['eval_'+SS].items():
+                    # if key == 'CompressionDistanceMetric': print(key, v)
+                    # assert len(v) != 0
+                    if key not in proper_random_dic[SS]:
+                        proper_random_dic[SS][key] = []
+                    proper_random_dic[SS][key].append(v)
+        
+                    
+        all_dics['Random'] = proper_random_dic
+
     dic = all_dics
     overall_dic_for_stats_test = {}
     dic_of_levels = {}
@@ -314,13 +359,12 @@ def get_all_results_from_methods_mario(return_levels=False, return_all_of_the_re
             moniker = get_moniker(single_run)
             little_d = {}
             stats_d = {}
-            dic[single_run] = clean_the_single_results_of_one_run(
-                dic[single_run])
+            if single_run != 'Random':
+                dic[single_run] = clean_the_single_results_of_one_run(dic[single_run])
             single_results = dic[single_run]['results_single']
             for key in single_results:
                 if len(single_results[key]) != 5:
                     print(f"LL of {moniker} with {key} is not 5")
-                    exit()
             dic_of_all_results[moniker] = dic[single_run]['results_all']
 
             dic_of_all_results[moniker]['train_time'] = []
@@ -374,6 +418,8 @@ def add_significance_to_dic_item(item: str, p: float, d: float, add_emblems: boo
         
         v = r"\textbf{" + item + "}"
         
+        if '$' in v:
+            v = re.sub('\$(.*?)\$', r'$\\mathbf{\1}$', v)
         v = "$" + v + "^{" + s + "}" + "$"
     return v
 
@@ -391,25 +437,31 @@ def general_thing(name_to_save_as: str, metric_names_to_use: List[str], alternat
             dic_of_mean_stds, dic_of_all_values = get_all_results_from_methods_maze()
         else:
             dic_of_mean_stds, dic_of_all_values = get_all_results_from_methods_mario()
-        
+
         if game == "Mario" and name_to_save_as == 'cd':
             for k in dic_of_all_values:
                 # Set this so that we use the correct CD metric, i.e. combined
                 dic_of_all_values[k]['CompressionDistanceMetric'] = dic_of_all_values[k]['CompressionDistanceMetric CombinedFeatures']
-                
         for metric_name_to_use, alternative in zip(metric_names_to_use, alternatives):
             metric_values_to_compare_against = dic_of_all_values[DEFAULT_MONIKER].get(
                 metric_name_to_use, [-1] * 5)
             normals = []
             data = {}
             how_many_true = 0
+            values_for_kruskal = []
             for method_name, dic_of_metrics in dic_of_all_values.items():
+                assert metric_name_to_use in dic_of_metrics
+                values_for_kruskal.append(dic_of_metrics.get(metric_name_to_use))
+                
                 normals.append((shapiro(dic_of_metrics.get(
                     metric_name_to_use, [-1] * 5)).pvalue >= 0.05, method_name))
                 if normals[-1][0]:
                     how_many_true += 1
-
-            # is_all_normal = (min(normals)[0] == True) and is_all_normal
+            
+            # Kruskal test to see if there is a statistically significant difference
+            _, kruskal_p = kruskal(*values_for_kruskal)
+            assert kruskal_p < 0.05
+            
             is_all_normal = (how_many_true == len(normals)) #and is_all_normal
             # We always use a Mann Whitney U test.
             print(f"{metric_name_to_use:<40} normality test {'PASSED' if is_all_normal else' FAILED'}. Ones that Failed = {[n for n in normals if not n[0]]}")
@@ -431,10 +483,8 @@ def general_thing(name_to_save_as: str, metric_names_to_use: List[str], alternat
                                          this_metric_values, alternative=alternative, equal_var=False)
                         u = -1
                     else:
-                        u, p = mannwhitneyu(
-                            metric_values_to_compare_against, this_metric_values, alternative=alternative, method='auto')
+                        u, p = mannwhitneyu(metric_values_to_compare_against, this_metric_values, alternative=alternative, method='auto')
                         t = -1
-
                     d = (np.mean(metric_values_to_compare_against) -
                          np.mean(this_metric_values)) / (np.std(metric_values_to_compare_against))
 
@@ -444,6 +494,16 @@ def general_thing(name_to_save_as: str, metric_names_to_use: List[str], alternat
             optimal_mean = (min if 'time' in metric_name_to_use.lower() else max)([
                 v['mean'] for v in data.values()
             ])
+            
+            all_keys = data.keys()
+            all_p_values = [data[m]['p'] for m in all_keys if m != DEFAULT_MONIKER]
+            # Correct with bonferonni error correction
+            reject, new_pvals, a, b = multipletests(all_p_values, alpha=0.05, method='bonferroni')
+            assert np.all(np.equal(reject, [p < 0.05 for p in new_pvals]))
+            KS = [m for  m in all_keys if m != DEFAULT_MONIKER]
+            for p, k in zip(new_pvals, KS):
+                data[k]['p'] = p
+            
             for name, dic_of_stats_values in data.items():
                 N = game + ' ' + metric_name_to_use
                 dic_for_df[name][N] = mean_std(dic_of_stats_values, decimals=3 if metric_name_to_use == 'CompressionDistanceMetric' and game == 'Maze' else 2)
@@ -498,8 +558,8 @@ def general_thing(name_to_save_as: str, metric_names_to_use: List[str], alternat
         # do multi row things better
         splits = [l.strip().replace(r"\\", "") for l in lines[3].split('&')]
         if name_to_save_as == 'cd':
-            splits_second_line = [s.strip().split(" ")[-1] for s in splits]
-            splits = [' '.join(s.strip().split(" ")[:-1]) for s in splits]
+            splits_second_line = [s.strip().split(" ")[-1] if s!='A* Diversity' else '' for s in splits ]
+            splits = [' '.join(s.strip().split(" ")[:-1])  if s!='A* Diversity' else s for s in splits ]
         lines[3] = ' & '.join([r"\multicolumn{1}{c}{" + s + "}" if s != "{}" else s for s in splits ]) + r"\\"
         if name_to_save_as == 'cd':
             lines.insert(4, 
@@ -509,7 +569,6 @@ def general_thing(name_to_save_as: str, metric_names_to_use: List[str], alternat
             splits = [l.strip().replace(r"\\", "") for l in lines[2].split('&')]
             lines[2] = ' & '.join([r"\multicolumn{1}{c}{" + s + " Solvability}" if s != "{}" else s for s in splits ]) + r"\\"
             lines.pop(3)
-        # {} &                           Leniency &                     A* Difficulty &                          Leniency &                      A* Difficulty \\
     with open(fpath, 'w+') as f:
         f.writelines([l + "\n" for l in lines])
 
@@ -577,16 +636,18 @@ def example_levels():
             os.makedirs(D, exist_ok=True)
             print(method, len(levels))
             for i, l in enumerate(levels):
-                plt.figure(figsize=(40 * 2, 16 * 2))
                 if is_mario:
                     plt.imshow(l.show(False))
                 else:
                     plt.imshow(1 - l.map, vmin=0, vmax=1, cmap='gray')
-                # plt.axis('off')
+                plt.axis('off')
                 plt.xticks([])
                 plt.yticks([])
                 plt.tight_layout()
-                plt.savefig(f"{D}/{i}.png", pad_inches=0.1,bbox_inches='tight')
+                if not is_mario:
+                    mysavefig(f"{D}/{i}.png", pad_inches=0, bbox_inches='tight')
+                else:
+                    mysavefig(f"{D}/{i}.png", pad_inches=0, bbox_inches='tight')
                 plt.close()
 
     save_levels(get_all_results_from_methods_mario(
@@ -605,7 +666,8 @@ def example_levels():
     map[(i), (i) % 14] = 0
     plt.xticks([]); plt.yticks([]); plt.tight_layout()
     plt.imshow(1 - map, cmap='gray'); 
-    plt.savefig(os.path.join(dir, 'maze_eg.png'), pad_inches=0.1,bbox_inches='tight')
+    plt.axis('off')
+    mysavefig(os.path.join(dir, 'maze_eg.png'), pad_inches=0.0, bbox_inches='tight')
     plt.close()
 
     mario_level = MarioLevel()
@@ -619,7 +681,7 @@ def example_levels():
     plt.figure(figsize=(20, 6))
     plt.xticks([]); plt.yticks([]); plt.tight_layout()
     plt.imshow(mario_level.show(False)); 
-    plt.savefig(os.path.join(dir, 'mario_eg.png'), pad_inches=0.1,bbox_inches='tight')
+    mysavefig(os.path.join(dir, 'mario_eg.png'), pad_inches=0.1,bbox_inches='tight')
     plt.close()
 
 
@@ -647,7 +709,9 @@ def v410_presentation_plots(name_to_save_as: str, metric_name_to_use: str,
             I = keys_to_consider.index(DEFAULT_MONIKER)
             keys_to_consider = [DEFAULT_MONIKER] + keys_to_consider[:I] + keys_to_consider[I+1:]
 
-            palette = dict(zip(keys_to_consider, sns.color_palette(n_colors=len(keys_to_consider))))
+            p = sns.color_palette(n_colors=len(keys_to_consider) + 1)
+            p = p[:2] + p[3:]
+            palette = dict(zip(keys_to_consider, p))
         print(dic_all_results[DEFAULT_MONIKER].keys())
         M = clean_metric(metric_name_to_use)
 
@@ -671,17 +735,14 @@ def v410_presentation_plots(name_to_save_as: str, metric_name_to_use: str,
             plt.ylabel('Time (s) - Lower is Better', fontsize=20)
         else:
             g = sns.histplot(big_dic_of_all_methods, x=M, hue='Method', palette=palette)
-            # , legend=True
-            # g.legend_.set_title(None)
         
-        # plt.legend()
-        plt.title(f"{game}: {M}", fontsize=20)
+        plt.title(f"Distribution of {M} - {game}".replace(" (Edit)",''))#, fontsize=20)
         if len(message):
             plt.xlabel(message)
         DIR = 'results/v400/presentation_plots'
         os.makedirs(DIR, exist_ok=True)
-        # plt.savefig(os.path.join(DIR, game + "_" + metric_name_to_use + ".png"), bbox_inches='tight', pad_inches=0.1)
-        plt.savefig(os.path.join(DIR, game + "_" + metric_name_to_use + ".png"))
+        plt.tight_layout()
+        mysavefig(os.path.join(DIR, game + "_" + metric_name_to_use + ".png"), bbox_inches='tight', pad_inches=0.1)
         plt.close()
 
 
@@ -707,29 +768,32 @@ def v420_exp_108():
     neat_results = get_things(neat_path)
     direct_results = get_things(directga_path)
     all_gens = sorted(list(neat_results.keys()))
-    def plot_thing(dic, name):
+    def plot_thing(dic, name, **kwargs):
         list_of_means = []
         list_of_stds = []
         for g in all_gens:
+            assert len(dic[g]) == 5;
             list_of_means.append(np.mean(dic[g]))
             list_of_stds.append(np.std(dic[g]))
+            
         
         list_of_means = np.array(list_of_means) 
         list_of_stds = np.array(list_of_stds) 
 
-        plt.plot(all_gens, list_of_means, label=name)
-        plt.fill_between(all_gens, list_of_means - list_of_stds, list_of_means + list_of_stds, alpha=0.5)
+        plt.plot(all_gens, list_of_means, label=name, **kwargs)
+        plt.fill_between(all_gens, list_of_means - list_of_stds, list_of_means + list_of_stds, alpha=0.5, **kwargs)
     
-    plot_thing(neat_results, 'NoveltyNEAT (Ours)')
+    plot_thing(neat_results, METHOD_NAME)
     plot_thing(direct_results, 'DirectGA+')
-    plt.xlabel("Number of generations")
+    plt.xlabel("Number of generations (i.e. training time)")
     plt.ylabel("Generation Time (s)")
     plt.yscale('log')
-    plt.title("Number of generations vs generation time - Maze")
+    plt.title("Number of generations vs generation time - Maze. Lower is better.")
+    plt.tight_layout()
     plt.legend()
     dir = 'results/v400/num_gens_effect'
     os.makedirs(dir, exist_ok=True)
-    plt.savefig(os.path.join(dir, 'v108.png')) #  , pad_inches=0.1,bbox_inches='tight'
+    mysavefig(os.path.join(dir, 'v108.png'), bbox_inches='tight', pad_inches=0.1)
     plt.close()
             
 def more_presentation():
@@ -752,7 +816,7 @@ def more_presentation():
                 plt.plot(*zip(*traj), linewidth=5, color='green')
                 plt.scatter([traj[-1][0]], traj[-1][1], marker='x', color='red', s=100, linewidths=5, alpha=1, zorder=1000)
 
-            plt.savefig(os.path.join(DIR, name), bbox_inches='tight', pad_inches=0)
+            mysavefig(os.path.join(DIR, name), bbox_inches='tight', pad_inches=0)
             plt.close()
         do_plot(map, 'solv-1.png')
         map = np.random.rand(W, W) > 0.5
@@ -775,7 +839,7 @@ def more_presentation():
             plt.imshow(1 - map, cmap='gray', vmin=0, vmax=1)
             plt.axis('off')
             plt.gca().set_position((0, 0, 1, 1))
-            plt.savefig(os.path.join(DIR, name), bbox_inches='tight', pad_inches=0)
+            mysavefig(os.path.join(DIR, name), bbox_inches='tight', pad_inches=0)
             plt.close()
         do_plot(map, 'nov-1.png')
         map[4, 4] = 1

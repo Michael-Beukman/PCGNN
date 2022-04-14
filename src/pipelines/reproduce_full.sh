@@ -50,3 +50,13 @@ cd v100 && sbatch v106.batch && cd -
 
 # v108:
 cd v100/v108 && bash run_all.sh && cd -
+
+# Run V500
+cd v500 && sbatch diversity_mario.batch && cd -
+cd v500 && sbatch diversity_maze.batch && cd -
+
+cd v500 && sbatch fitness_mario.batch && cd -
+cd v500 && sbatch fitness_maze.batch && cd -
+
+cd v500 && sbatch random_mario.batch && cd -
+cd v500 && sbatch random_maze.batch && cd -

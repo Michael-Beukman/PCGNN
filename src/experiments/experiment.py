@@ -8,7 +8,7 @@ from common.types import Verbosity
 from common.utils import clean_name, get_date
 from experiments.results import Results
 from experiments.config import Config
-from experiments.logger import WandBLogger, Logger
+from experiments.logger import WandBLogger, Logger, WriteToDictionaryLogger
 from metrics.metric import Metric
 from timeit import default_timer as tmr
 import random
@@ -20,7 +20,7 @@ class Experiment:
     """
         This should run a single experiment, including training, evaluating and storing results.
     """
-    def __init__(self, config: Config, get_method: Callable[[], PCGMethod], metrics: List[Metric], log_to_wandb=True, verbose: Verbosity = Verbosity.NONE):
+    def __init__(self, config: Config, get_method: Callable[[], PCGMethod], metrics: List[Metric], log_to_wandb=True, verbose: Verbosity = Verbosity.NONE, log_to_dict: bool = False):
         """
             Initialises this experiment.
         Args:
@@ -31,15 +31,18 @@ class Experiment:
             log_to_wandb (bool): If this is true, then we create a wandb logger. Otherwise, we simply make a standard, no-op logger. 
                 Useful for testing some things.
             verbose (Verbosity): How verbose should the method be.
+            log_to_dict (bool): If true, logs all fitnesses to a pickle file.
         """
         self.config = config
         np.random.seed(config.seed)
         random.seed(config.seed)
         self.method = get_method()
-        if log_to_wandb:
-            self.logger: Logger = WandBLogger(config, verbose)
+        if log_to_dict:
+            self.logger: Logger = WriteToDictionaryLogger(config, verbose, seed=config.seed)
+        elif log_to_wandb:
+            self.logger: Logger = WandBLogger(config, verbose, seed=config.seed)
         else:
-            self.logger: Logger = Logger(config, verbose)
+            self.logger: Logger = Logger(config, verbose, seed=config.seed)
         # self.logger = Logger(config)
         self.metrics = metrics
     
@@ -60,6 +63,7 @@ class Experiment:
         end = tmr()
         self.train_time = end - start
         self.logger.log({'train_time': self.train_time})
+        self.logger.end(self.method.game.__class__.__name__, self.config.seed)
 
     def evaluate(self, step: int = 0):
         """

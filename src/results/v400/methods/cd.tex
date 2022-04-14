@@ -1,15 +1,16 @@
 \begin{tabular}{lllll}
 \toprule
 {} & \multicolumn{2}{c}{Maze} & \multicolumn{2}{c}{Mario} \\
-\multicolumn{1}{c}{} & \multicolumn{1}{c}{Compression} & \multicolumn{1}{c}{A* Diversity} & \multicolumn{1}{c}{Compression} & \multicolumn{1}{c}{A* Diversity}\\
-{} & \multicolumn{1}{c}{Distance} & \multicolumn{1}{c}{(Edit)} & \multicolumn{1}{c}{Distance} & \multicolumn{1}{c}{(Edit)}\\
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{Compression} & \multicolumn{1}{c}{A* Diversity} & \multicolumn{1}{c}{Compression} & \multicolumn{1}{c}{A*}\\
+{} & \multicolumn{1}{c}{Distance} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{Distance} & \multicolumn{1}{c}{Diversity}\\
 \midrule
-NoveltyNEAT (Ours) &                        0.488 (0.002) &                       0.13 (0.17) &          0.45 (0.10) &                        0.38 (0.11) \\
-DirectGA           &                                    - &                                 - &             0.46 (0) &  $\textbf{0.10 (0.01)}^{*\dagger}$ \\
-DirectGA+          &   $\textbf{0.493 (0.002)}^{\dagger}$ &  $\textbf{0.41 (0.01)}^{\dagger}$ &             0.55 (0) &                           0.33 (0) \\
-DirectGA (Novelty) &   $\textbf{0.494 (0.002)}^{\dagger}$ &  $\textbf{0.40 (0.01)}^{\dagger}$ &          0.44 (0.01) &                        0.20 (0.01) \\
-PCGRL (Wide)       &  $\textbf{0.525 (0.021)}^{*\dagger}$ &  $\textbf{0.43 (0.01)}^{\dagger}$ &             0.56 (0) &     $\textbf{0.55 (0)}^{*\dagger}$ \\
-PCGRL (Turtle)     &  $\textbf{0.513 (0.006)}^{*\dagger}$ &  $\textbf{0.43 (0.01)}^{\dagger}$ &             0.56 (0) &     $\textbf{0.55 (0)}^{*\dagger}$ \\
+PCGNN (Ours)       &                       0.488 (0.002) &  0.13 (0.17) &          0.45 (0.10) &                       0.38 (0.11) \\
+DirectGA           &                                   - &            - &             0.46 (0) &  $\textbf{0.10 (0.01)}^{\dagger}$ \\
+DirectGA+          &                       0.493 (0.002) &  0.41 (0.01) &             0.55 (0) &                          0.33 (0) \\
+DirectGA (Novelty) &                       0.494 (0.002) &  0.40 (0.01) &          0.44 (0.01) &                       0.20 (0.01) \\
+PCGRL (Wide)       &  $\textbf{0.525 (0.021)}^{\dagger}$ &  0.43 (0.01) &             0.56 (0) &     $\textbf{0.55 (0)}^{\dagger}$ \\
+PCGRL (Turtle)     &  $\textbf{0.513 (0.006)}^{\dagger}$ &  0.43 (0.01) &             0.56 (0) &     $\textbf{0.55 (0)}^{\dagger}$ \\
+Random             &  $\textbf{0.494 (0.001)}^{\dagger}$ &  0.00 (0.01) &             0.47 (0) &  $\textbf{0.72 (0.02)}^{\dagger}$ \\
 \bottomrule
 \end{tabular}
 

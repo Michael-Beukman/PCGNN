@@ -196,7 +196,6 @@ def trajectory_sample_distance(a: Tuple[np.ndarray, np.ndarray, np.ndarray], b: 
     traj1 = a[0]
     traj2 = b[0]
     m = a[-1]
-
     if len(traj1) == 0 or len(traj2) == 0: return 0
     return sampled_norm_trajectory_comparison(list(map(tuple,traj1)), list(map(tuple,traj2)), w=m.shape[1], h=m.shape[0], n_trajectory_samples=30)
 
@@ -242,6 +241,64 @@ def rolling_window_comparison_what_you_see(a: Tuple[np.ndarray, np.ndarray, np.n
     return ans
 
 
+def rolling_window_comparison_what_you_see_from_normal(a: np.ndarray, 
+                                           b: np.ndarray, 
+                                           distance_func: Callable[[np.ndarray, np.ndarray], float] = visual_diversity,
+                                           n_samples: Union[int, None] = None,
+                                           window_size: int = 3) -> float:
+    """
+        This does the following:
+        For each step of the trajectory, it takes the surrounding window_size x window_size chunk of level a, and compares that against the 
+        same block of level b. The overall distance is the average of the distances between these ones.
+    Args:
+        a (Tuple[np.ndarray, np.ndarray, np.ndarray]): Just map
+        b (Tuple[np.ndarray, np.ndarray, np.ndarray]): Just map
+        distance_func: Which function to use to compare the smaller chunks
+        n_samples: How many points to sample the trajectory at.
+        window_size (int, optional). The size of the window to consider at each step. Defaults to 3.
+
+    Returns:
+        float: [description]
+    """
+    a = get_only_reachable_from_start(a)
+    b = get_only_reachable_from_start(b)
+    # Now, we need to convert this to a trajectory
+    traj_1 = np.array(sorted(np.argwhere(a), key=lambda x: tuple(x)))
+    traj_2 = np.array(sorted(np.argwhere(b), key=lambda x: tuple(x)))
+    
+    return rolling_window_comparison_what_you_see([traj_1, a], [traj_2, b], distance_func, n_samples, window_size)
+
+def rolling_window_comparison_what_you_see_from_normal_default(a: np.ndarray, b: np.ndarray):
+    return rolling_window_comparison_what_you_see_from_normal(a, b, n_samples=30, distance_func=visual_diversity_normalised)
+
+
+def rolling_window_comparison_what_you_see_from_normal_TRAJ(a: np.ndarray, 
+                                           b: np.ndarray, 
+                                           distance_func: Callable[[np.ndarray, np.ndarray], float] = visual_diversity,
+                                           n_samples: Union[int, None] = None,
+                                           window_size: int = 3) -> float:
+    """
+        This does the following:
+        For each step of the trajectory, it takes the surrounding window_size x window_size chunk of level a, and compares that against the 
+        same block of level b. The overall distance is the average of the distances between these ones.
+    Args:
+        a (Tuple[np.ndarray, np.ndarray, np.ndarray]): Just map
+        b (Tuple[np.ndarray, np.ndarray, np.ndarray]): Just map
+        distance_func: Which function to use to compare the smaller chunks
+        n_samples: How many points to sample the trajectory at.
+        window_size (int, optional). The size of the window to consider at each step. Defaults to 3.
+
+    Returns:
+        float: [description]
+    """
+    patha = shortest_path(a, (0, 0), (a.shape[1] - 1, a.shape[0] - 1), 1)
+    pathb = shortest_path(b, (0, 0), (b.shape[1] - 1, b.shape[0] - 1), 1)
+    if patha is None or pathb is None: return 0
+    return rolling_window_comparison_what_you_see([patha, a], [pathb, b], distance_func, n_samples, window_size)
+
+def rolling_window_comparison_what_you_see_from_normal_default_TRAJ(a: np.ndarray, b: np.ndarray):
+    return rolling_window_comparison_what_you_see_from_normal_TRAJ(a, b, n_samples=30, distance_func=visual_diversity_normalised)
+
 
 
 if __name__ == '__main__':
@@ -251,12 +308,15 @@ if __name__ == '__main__':
     np.random.seed(42)
     a = (np.random.rand(14, 14) > 0.5) * 1
     b = (np.random.rand(14, 14) > 0.5) * 1
-    # b = 1 - a
+    i = np.arange(14)
+    a[i, i] = 0; a[i, i-1] = 0;  a[1, 0] = 0
+    b[i, i] = 0; b[i, i-1] = 0;
 
     de = euclidean_distance(a, b)
     d_imhash = image_hash_distance_perceptual_simple(a, b)
     funcs = [image_hash_distance_perceptual_simple, image_hash_distance_perceptual,
-             image_hash_distance_average, image_hash_distance_wavelet, jensen_shannon_distance, jensen_shannon_compare_trajectories_distance]
+             image_hash_distance_average, image_hash_distance_wavelet, jensen_shannon_distance, jensen_shannon_compare_trajectories_distance,rolling_window_comparison_what_you_see_from_normal_default,
+             rolling_window_comparison_what_you_see_from_normal_default_TRAJ]
     for f in funcs:
         print(f"{f.__name__} = {f(a, b)}")
     fig, axs = plt.subplots(1, 2)

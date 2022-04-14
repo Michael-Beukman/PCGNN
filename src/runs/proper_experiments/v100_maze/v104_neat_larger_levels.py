@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 import neat
 import numpy as np
 import ray
-from common.utils import get_date
+from common.utils import get_date, save_compressed_pickle
 from games.maze.maze_game import MazeGame
 from games.maze.maze_level import MazeLevel
 from metrics.a_star.a_star_metrics import AStarDifficultyMetric, AStarDiversityAndDifficultyMetric, AStarDiversityMetric, AStarEditDistanceDiversityMetric, AStarSolvabilityMetric
@@ -47,16 +47,24 @@ def exp_104_b():
         val['levels'] = levels
         val['eval_results_all'] = {}
         val['eval_results_single'] = {}
-
+        
+        # Add start and end if required
+        for l in levels:
+            if not hasattr(l, 'start'): l.start = (0, 0)
+            height, width = l.map.shape
+            if not hasattr(l, 'end'): l.end = (width - 1, height - 1)
+        
         for myindex, m in enumerate(metrics):
-            print(f"Metric {myindex+1} / {len(metrics)}")
+            print(f"Running Metric {myindex+1} / {len(metrics)} -- {m.name()}")
+            t_start = tmr()
             values = m.evaluate(levels)
+            t_end = tmr()
             N = m.__class__.__name__
             N = m.name()
             val['eval_results_single'][N] = np.mean(values)
             val['eval_results_all'][N] = values
             
-            print(f"{N:<30} OG = {og_dic['eval_results_single'].get(N, 'not there')}, now = {np.mean(values)}")
+            print(f"{N:<30} OG = {og_dic['eval_results_single'].get(N, 'not there')}, now = {np.mean(values)}. Metric {N} with w={w} took {t_end - t_start}s")
         val['parent'] = metrics[0].parent
         print("--")
         return val
@@ -67,7 +75,7 @@ def exp_104_b():
         '../results/experiments/experiment_105_a/Maze/NEAT/2021-10-31_13-23-23/50/200/3/seed_3_name_experiment_105_a_2021-10-31_13-43-19.p',
         '../results/experiments/experiment_105_a/Maze/NEAT/2021-10-31_13-23-23/50/200/4/seed_4_name_experiment_105_a_2021-10-31_13-40-59.p',
     ]
-    Ws = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    Ws = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 500, 1000, 2000]
     config = './runs/proper_experiments/v100_maze/config/tiling_generate_12_1_balanced_pop100'
     all_dictionary = {
         'files': names,
@@ -93,12 +101,14 @@ def exp_104_b():
                 diff,
                 div,
                 edit_distance_div,
-                LeniencyMetric(g),
-                LinearityMetric(g),
-                CompressionDistanceMetric(g),
-                AveragePairWiseDistanceMetric(g),
-                HammingDistanceMetric(g),
-                EditDistanceMetric(g),                
+                
+                # Commented out 2022/03/31 to run faster for larger levels
+                # LeniencyMetric(g),
+                # LinearityMetric(g),
+                # CompressionDistanceMetric(g),
+                # AveragePairWiseDistanceMetric(g),
+                # HammingDistanceMetric(g),
+                # EditDistanceMetric(g),                
             ]
 
     @ray.remote
@@ -108,7 +118,7 @@ def exp_104_b():
             dic = pickle.load(f)
         
         best = dic['train_results'][0]['final_agent']
-
+        # print("ABC = ", dic['eval_results_single'])
         neat_conf = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                             neat.DefaultSpeciesSet, neat.DefaultStagnation,
                             config)
@@ -120,10 +130,12 @@ def exp_104_b():
         metrics = get_metrics(g)
         
         val_og = evaluate_one_set_of_levels(metrics, dic['levels'], 14, dic)
-
+        # all_dictionary['original'].append(val_og)
+        # END EVAL OG levels
+        # all_dictionary['data'][w]
         all_others = {}
         for w in Ws:
-            print(f"{w}")
+            print(f"{w} -- {I}")
             h = w
             generator = GenerateMazeLevelsUsingTiling(game=MazeGame(MazeLevel(w, h)), number_of_random_variables=4, 
                     should_add_coords=False,
@@ -136,11 +148,11 @@ def exp_104_b():
             for i in range(100):
                 levels.append(generator(net))
             time_end = tmr()
+            print(f"FOR LEVEL SIZE: {w} is gen time = {time_end - time_start}s")
             g = MazeGame(MazeLevel(w, h))
             metrics = get_metrics(g)
             val = evaluate_one_set_of_levels(metrics, levels, w, dic)
             val['generation_time'] = time_end - time_start
-            print(f"FOR LEVEL SIZE: {w} is gen time = {time_end - time_start}s")
             
             all_others[w] = val
         return val_og, all_others
@@ -156,8 +168,17 @@ def exp_104_b():
         
     d = f'../results/experiments/104b/runs/{get_date()}'
     os.makedirs(d, exist_ok=True)
-    with open(f"{d}/data.p", 'wb+') as f:
+    with open(f"{d}/data_large.p", 'wb+') as f:
         pickle.dump(all_dictionary, f)
+        
+    # Make dictionary a bit smaller as the large levels take up a lot of space
+    for w, little_d in all_dictionary['data'].items():
+        for p in little_d:
+            del p['parent']
+            if w > 100: 
+                p['levels'] = p['levels'][:10]
+        
+    save_compressed_pickle(f"{d}/data", all_dictionary)
 
 if __name__ == '__main__':
     exp_104_b()

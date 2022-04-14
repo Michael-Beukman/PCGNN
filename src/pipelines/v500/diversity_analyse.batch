@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH -N 1
+#SBATCH -t 72:00:00
+#SBATCH -J 501_2
+#SBATCH -o /home/NAME/PATH_TO_ROOT/src/logs/pipelines/v503_analyse_0_0.%N.%j.out
+
+source ~/.bashrc
+cd /home/NAME/PATH_TO_ROOT/src
+conda activate noveltyneatpcg
+echo "Doing v501 a 0"
+./run.sh src/runs/proper_experiments/v500/test_diversity_functions_analyse.py

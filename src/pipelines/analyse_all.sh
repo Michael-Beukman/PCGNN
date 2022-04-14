@@ -8,3 +8,7 @@ cd v100 && sbatch for_maze_1.batch && cd -
 cd v100 && sbatch v104_analyse.batch && cd -
 # analyse 206 
 cd v200 && sbatch v206_analyse.batch && cd -
+
+# V500
+cd v500 && sbatch fitness_analyse.batch && cd -
+cd v500 && sbatch diversity_analyse.batch && cd -

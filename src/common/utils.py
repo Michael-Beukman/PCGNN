@@ -1,11 +1,20 @@
 import copy
 import datetime
-import glob
 import pprint
+import re
 from typing import Dict, List
+import glob
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
+from matplotlib import pyplot as plt
 import numpy as np
-
 import pandas as pd
+import pickle
+import bz2
+
+METHOD_NAME = 'PCGNN (Ours)'
+
 
 
 def get_date() -> str:
@@ -172,6 +181,7 @@ def do_statistical_tests_and_get_df(main_dic: Dict[str, Dict[str, float]], stats
         # sort ascending, remove our method here
         list_for_this_key = sorted(list_for_this_key)[:-1]
         gamma = 0.95
+        # print("GAMMAS: ",[1 - gamma**((i+1)/(len(list_for_this_key)-1)) for i, p in enumerate(list_for_this_key)])
         # find i
         Xs = [i for i, p in enumerate(list_for_this_key) if p[0] > 1 - gamma**((i+1)/(len(list_for_this_key)-1))]
         i = (min(Xs) - 1) if len(Xs) else len(list_for_this_key) - 1
@@ -191,6 +201,8 @@ def do_statistical_tests_and_get_df(main_dic: Dict[str, Dict[str, float]], stats
                     if p < 0.001:
                         s += "*"
                 if abs(d) >= 0.8: s+= "\dagger"
+                if '$' in v:
+                    re.sub('\$(.*?)\$', r'$\mathbf{\1}$', v)
                 v = r"\textbf{" + v + "}"
                 v = "$" + v  + "^{" + s + "}"+ "$"
 
@@ -211,6 +223,40 @@ def do_statistical_tests_and_get_df(main_dic: Dict[str, Dict[str, float]], stats
     return df, df_stats
 
 
+def mysavefig(*args, **kwargs):
+    args = list(args)
+    kwargs['dpi'] = 400
+    plt.savefig(*args, **kwargs)
+    if 0:
+        args[0] = args[0].split(".png")[0] + ".pdf"
+        plt.savefig(*args, **kwargs)
+        args[0] = args[0].split(".pdf")[0] + ".eps"
+        plt.savefig(*args, **kwargs)
+    
+    
+def my_fig_savefig(fig, *args, **kwargs):
+    args = list(args)
+    kwargs['dpi'] = 400
+    fig.savefig(*args, **kwargs)
+    args[0] = args[0].split(".png")[0] + ".pdf"
+    fig.savefig(*args, **kwargs)
+    if 0:
+        args[0] = args[0].split(".pdf")[0] + ".eps"
+        fig.savefig(*args, **kwargs)
+        
+    
 def get_latest_folder(s):
     # Returns the folder that is latest, which will be determined by the value of the date in the path, hence sorting is valid.
     return max(glob.glob(s))
+
+
+
+# https://betterprogramming.pub/load-fast-load-big-with-compressed-pickles-5f311584507e
+def save_compressed_pickle(title, data):
+    with bz2.BZ2File(title + '.pbz2', 'w') as f: 
+        pickle.dump(data, f)
+
+def load_compressed_pickle(file):
+    data = bz2.BZ2File(file, 'rb')
+    data = pickle.load(data)
+    return data

@@ -30,6 +30,7 @@
   - [Island Models](#island-models)
 - [Other repositories and projects used](#other-repositories-and-projects-used)
   - [Some ideas from here](#some-ideas-from-here)
+  - [Issues](#issues)
 - [Acknowledgements](#acknowledgements)
 
 <p align='center'>
@@ -38,7 +39,7 @@
 
 
 ## About
-This is a research project for a BSc (Hons) degree at the University of the Witwatersrand, Johannesburg. It's about combining novelty search and NeuroEvolution of Augmenting Topologies (NEAT) for procedural level generation. We also investigate two new [metrics](#metrics) for evaluating the diversity and difficulty of levels. This repo contains our code as well as the final report.
+This repository stores the code for two different projects. Firstly, a procedural content generation approach that combines novelty search and NeuroEvolution of Augmenting Topologies (NEAT). We also investigate two new [metrics](#metrics) for evaluating the diversity and difficulty of levels. This repository contains the code for both projects.
 
 If you just want to get started generating or playing levels, then please look at [how to generate levels](#generate-levels) or the [examples](#works-for-tilemaps). Also feel free to look at the [report](https://github.com/Michael-Beukman/PCGNN/tree/main/doc/report.pdf) or a [poster](https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf) that summarises our approach. For information about the metrics and how to use them, see [here](#metrics).
 ## General structure
@@ -172,11 +173,19 @@ Method runs
 - **v204**: Mario NEAT
 - **v201**: Mario DirectGA
 
+Additional Experiments (largely shown in the appendix)
+- **v501**: Diversity Functions test for Maze
+- **v502**: Diversity Functions test for Mario
+- **v551**: Fitness Plots for Maze
+- **v552**: Fitness Plots for Mario
+- **v581**: Random Baseline for Maze
+- **v582**: Random Baseline for Mario
+
 The PCGRL code can be found in `./src/external/gym-pcgrl`
 ### Reproducing
 Our results that were shown and mentioned in the report are mainly found in `src/results/`.
 
-The following describes how to reproduce our results. Note, there might be some difference in the ordering of the images (e.g. mario-level-0.png and mario-level-1.png will swap), but the set of level images generated should be exactly the same. 
+The following describes how to reproduce our results. Note, there might be some difference in the ordering of the images (e.g. mario-level-0.png and mario-level-1.png will swap), but the set of level images generated should be exactly the same. There is one experiment (104), in which this is not the case, but the metric values are very similar, so the effect of this is minor.
 
 
 The whole process contains 3 steps, and does assume a [Slurm](https://slurm.schedmd.com/documentation.html) based cluster scheduler. Please also change the logfile locations (look at running `src/pipelines/replace_all_paths.sh` **from the repository root** after changing paths in there -  this updates all paths, and decompresses some results). Our partition name was `batch`, so this also potentially needs to be updated in the Slurm scripts.
@@ -281,6 +290,8 @@ These can be found in `src/external`. We did edit and adapt some of the code, bu
 
 
 And some snippets from Stack Overflow, which I've tried to reference where they were used.
+## Issues
+If there are any problems or errors, then please open an [issue](https://github.com/Michael-Beukman/PCGNN/issues).
 
 # Acknowledgements
 This work is based on the research supported wholly by the National Research Foundation of South Africa (Grant UID 133358).

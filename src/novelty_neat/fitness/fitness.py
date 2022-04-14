@@ -111,7 +111,8 @@ class CombinedFitness(NeatFitnessFunction):
                 n.__class__.__name__: {
                     'mean': 0,
                     'max': 0,
-                    'min': 0
+                    'min': 0,
+                    'all': []
                 } for n in self.fitnesses
             }
         }
@@ -121,6 +122,8 @@ class CombinedFitness(NeatFitnessFunction):
             k['mean'] = np.mean(list_of_all)
             k['max'] = np.max(list_of_all)
             k['min'] = np.min(list_of_all)
+            if self.logger and self.logger.LOG_ALL_FITNESSES:
+                k['all'] = (list_of_all)
             if self.mode == 'add':
                 final_answer += weight * list_of_all
             else:

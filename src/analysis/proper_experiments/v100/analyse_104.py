@@ -7,7 +7,7 @@ import re
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from common.utils import get_latest_folder
+from common.utils import METHOD_NAME, get_latest_folder, load_compressed_pickle, mysavefig
 from games.maze.maze_game import MazeGame
 from games.maze.maze_level import MazeLevel
 
@@ -28,12 +28,12 @@ def analyse_104_with_line_graph():
         This plots a line graph of experiment 104, as well as using some data from experiment 107.
         The x-axis will be level size and the y-axis the metrics, specifically time and maybe some others.
     """
-    with open(get_latest_folder('../results/experiments/104b/runs/*/data.p'), 'rb') as f:
-        data = pickle.load(f)
+
+    data = load_compressed_pickle(get_latest_folder('../results/experiments/104b/runs/*/data.pbz2'))
 
     
     def get_mean_standard_for_one_point_in_directga(width, mean_dic, std_dic):
-        path = os.path.join(get_latest_folder(f'../results/experiments/experiment_107_a/Maze/DirectGA/2*'), f'{width}/*/*/*/*/*/*/*.p')
+        path = f'../results/experiments/experiment_107_a/Maze/DirectGA/2021-10-25_20-03-03/{width}/*/*/*/*/*/*/*.p'
 
         li = glob.glob(path)
         print(len(li), path)
@@ -56,7 +56,7 @@ def analyse_104_with_line_graph():
             plt.figure(figsize=(20, 20))
             plt.imshow(1 - l.map, cmap='gray', vmin=0, vmax=1)
             plt.axis('off')
-            plt.savefig(os.path.join(dir, f'{width}-{i}.png'), pad_inches=0.1, bbox_inches='tight')
+            mysavefig(os.path.join(dir, f'{width}-{i}.png'), pad_inches=0.1, bbox_inches='tight')
             plt.close()
         print("Direct ", metrics.keys())
         for key in metrics:
@@ -105,7 +105,7 @@ def analyse_104_with_line_graph():
                     metrics[key].append(d[key] / 100)
                 else:
                     metrics[key].append(d[key])
-        
+
         for key in metrics:
             metrics[key] = np.array(metrics[key])
             all_values_mean[key].append(np.mean(metrics[key]))
@@ -118,7 +118,7 @@ def analyse_104_with_line_graph():
             plt.figure(figsize=(20, 20))
             l.show(True)
             plt.axis('off')
-            plt.savefig(os.path.join(dir, f'{width}-{i}.png'), pad_inches=0.1, bbox_inches='tight')
+            mysavefig(os.path.join(dir, f'{width}-{i}.png'), pad_inches=0.1, bbox_inches='tight')
             plt.close()
             
     metrics_to_plot = [
@@ -132,7 +132,6 @@ def analyse_104_with_line_graph():
     print("KEYS: ", all_values_mean.keys())
     sns.set_theme()
     for key in metrics_to_plot:
-        
         all_values_mean[key] = np.array(all_values_mean[key])
         all_values_std[key] = np.array(all_values_std[key])
 
@@ -140,8 +139,11 @@ def analyse_104_with_line_graph():
         all_values_std_direct_ga[key] = np.array(all_values_std_direct_ga[key])
 
         plt.figure()
-        plt.plot(widths, all_values_mean[key], label='NoveltyNEAT (Ours)')
-        plt.fill_between(widths, all_values_mean[key] - all_values_std[key], all_values_mean[key] + all_values_std[key], alpha=0.5)
+        try:
+            plt.plot(widths, all_values_mean[key], label=METHOD_NAME)
+            plt.fill_between(widths, all_values_mean[key] - all_values_std[key], all_values_mean[key] + all_values_std[key], alpha=0.5)
+        except Exception as e:
+            print("ERROR", e)
         if len(all_values_mean_direct_ga[key]) == 0:
             print(f"KEY = {key} does not have data for DirectGA")
         else:
@@ -149,7 +151,7 @@ def analyse_104_with_line_graph():
             plt.fill_between(directga_widths, all_values_mean_direct_ga[key] - all_values_std_direct_ga[key], all_values_mean_direct_ga[key] + all_values_std_direct_ga[key], alpha=0.5)
 
         plt.xlabel("Level Width = Height")
-        pkey = pretty_key(key).replace("Metric", '')
+        pkey = pretty_key(key).replace("Metric", '').strip()
         plt.ylabel(pkey)
         plt.title(f"Comparing {pkey} vs Level Size. Higher is better.")
         if 'time' in key.lower():
@@ -160,7 +162,7 @@ def analyse_104_with_line_graph():
         # plt.show()
         plt.legend()
 
-        plt.savefig(f'results/maze/104/line_graph/{key}.png')
+        mysavefig(f'results/maze/104/line_graph/{key}.png', bbox_inches='tight', pad_inches=0.05)
 
 
     df = pd.DataFrame(all_metrics).round(2)

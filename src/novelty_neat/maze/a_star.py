@@ -1,7 +1,9 @@
 from collections import defaultdict
+import pickle
 from queue import PriorityQueue
 from typing import List, Tuple, Union
 from matplotlib import pyplot as plt
+from matplotlib.colors import ListedColormap
 import numpy as np
 
 from games.maze.maze_level import MazeLevel
@@ -91,13 +93,22 @@ def a_star(grid: np.ndarray, start: Tuple[int, int], goal: Tuple[int, int], bloc
     
 def do_astar_from_level(level: MazeLevel) -> Tuple[Union[List[Tuple[int, int]], None], int]:
     height, width = level.map.shape
-    goal = level.end # (width - 1, height - 1)
+    if not hasattr(level, 'end'):
+        goal = (width - 1, height - 1)
+    else:
+        goal = level.end # (width - 1, height - 1)
+    
+    if not hasattr(level, 'start'):
+        start_tile = (0, 0)
+    else:
+        start_tile = level.start
+    
     if not hasattr(level, 'tile_types_reversed'):
         level.tile_types_reversed = {v: k for k, v in level.tile_types.items()}
     # cannot start on a filled up tile.
-    if level.map[level.start[1], level.start[0]] == level.tile_types_reversed['filled']:
+    if level.map[start_tile[1], start_tile[0]] == level.tile_types_reversed['filled']:
         return None, set(), (level.map == level.tile_types_reversed['empty']).sum()
-    path = a_star(level.map, level.start , goal, level.tile_types_reversed['filled'])
+    path = a_star(level.map, start_tile, goal, level.tile_types_reversed['filled'])
     return path
 
 if __name__ == '__main__':

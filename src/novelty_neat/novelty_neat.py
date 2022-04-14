@@ -3,7 +3,7 @@ import pickle
 from common.methods.pcg_method import PCGMethod
 from typing import Any, Dict, List, Callable, Tuple, Union
 from common.types import Verbosity
-from common.utils import get_date
+from common.utils import get_date, save_compressed_pickle
 from games.game import Game
 from games.level import Level
 from experiments.logger import Logger
@@ -69,17 +69,41 @@ class NoveltyNeatPCG(PCGMethod):
             for genome_id, genome in genomes:
                 nets.append(neat.nn.FeedForwardNetwork.create(genome, config))
             all_fitnesses = self.fitness_calculator(nets)
+            min_idx = 0; max_idx = 0
+            idx = 0
             for fit, (_, genome) in zip(all_fitnesses, genomes):
                 genome.fitness = fit
+                if fit > all_fitnesses[max_idx]: max_idx = idx
+                if fit < all_fitnesses[min_idx]: min_idx = idx
+                idx += 1
             # Log some info.
+            
+            
+            
             logger.log({
                 'mean_fitness': np.mean(all_fitnesses),
                 'max_fitness': np.max(all_fitnesses),
                 'min_fitness': np.min(all_fitnesses),
-            },step=steps)
+                'all_fitness': all_fitnesses if logger and logger.LOG_ALL_FITNESSES else []
+            }, step=steps)
             steps += 1
             if logger.verbose == Verbosity.PROGRESS:
                 print(f"\r{steps} / {self.num_generations}", end='')
+            
+            if logger and logger.LOG_ALL_FITNESSES:
+                folder = f"results/all_models/pcgnn/{logger.seed}/{self.game.__class__.__name__}/min"
+                os.makedirs(folder, exist_ok=True)
+                save_compressed_pickle(os.path.join(folder, f'gen_{str(steps).zfill(3)}'), {'config': config, 'net': nets[min_idx], 'genome': genomes[min_idx]})
+                
+                folder = f"results/all_models/pcgnn/{logger.seed}/{self.game.__class__.__name__}/max"
+                os.makedirs(folder, exist_ok=True)
+                save_compressed_pickle(os.path.join(folder, f'gen_{str(steps).zfill(3)}'), {'config': config, 'net': nets[max_idx], 'genome': genomes[max_idx]})
+                
+                folder = f"results/all_models/pcgnn/{logger.seed}/{self.game.__class__.__name__}/alls"
+                os.makedirs(folder, exist_ok=True)
+                save_compressed_pickle(os.path.join(folder, f'gen_{str(steps).zfill(3)}'), {'config': config, 'nets': nets, 'genomes': genomes})
+                
+                
 
         self.fitness_calculator.logger = logger
         self.best_agent = self.pop.run(fitness_function=fitness, n=self.num_generations)
