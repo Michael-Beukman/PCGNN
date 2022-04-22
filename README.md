@@ -1,7 +1,7 @@
 # PCGNN - Procedural Content Generation with NEAT and Novelty
 
 <p align="center">
-<a href="#explanation">Generation Approach</a> &mdash; <a href="#metrics">Metrics</a> &mdash; <a href="https://github.com/Michael-Beukman/PCGNN/tree/main/doc/report.pdf">Paper</a> &mdash; <a href="https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf">Poster</a> &mdash; <a href="#features">Examples</a> 
+<a href="#explanation">Generation Approach</a> &mdash; <a href="#metrics">Metrics</a> &mdash; <a href="https://arxiv.org/abs/2204.06934">Paper</a> &mdash; <a href="https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf">Poster</a> &mdash; <a href="#features">Examples</a> 
 </p>
 
 - [PCGNN - Procedural Content Generation with NEAT and Novelty](#pcgnn---procedural-content-generation-with-neat-and-novelty)
@@ -31,6 +31,7 @@
 - [Other repositories and projects used](#other-repositories-and-projects-used)
   - [Some ideas from here](#some-ideas-from-here)
   - [Issues](#issues)
+- [Citation](#citation)
 - [Acknowledgements](#acknowledgements)
 
 <p align='center'>
@@ -41,7 +42,7 @@
 ## About
 This repository stores the code for two different projects. Firstly, a procedural content generation approach that combines novelty search and NeuroEvolution of Augmenting Topologies (NEAT). We also investigate two new [metrics](#metrics) for evaluating the diversity and difficulty of levels. This repository contains the code for both projects.
 
-If you just want to get started generating or playing levels, then please look at [how to generate levels](#generate-levels) or the [examples](#works-for-tilemaps). Also feel free to look at the [report](https://github.com/Michael-Beukman/PCGNN/tree/main/doc/report.pdf) or a [poster](https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf) that summarises our approach. For information about the metrics and how to use them, see [here](#metrics).
+If you just want to get started generating or playing levels, then please look at [how to generate levels](#generate-levels) or the [examples](#works-for-tilemaps). Also feel free to look at the [paper](https://arxiv.org/abs/2204.06934) or a [poster](https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf) that summarises our approach. For information about the metrics ([paper on Arxiv](https://arxiv.org/abs/2201.10334)) and how to use them, see [here](#metrics).
 ## General structure
 The main structure of the code is (hopefully) somewhat understandable.
 First of all, to run any python file in here, use `./run.sh path/to/python/file` instead of using `python` directly, because otherwise modules are not recognised.
@@ -292,6 +293,29 @@ These can be found in `src/external`. We did edit and adapt some of the code, bu
 And some snippets from Stack Overflow, which I've tried to reference where they were used.
 ## Issues
 If there are any problems or errors, then please open an [issue](https://github.com/Michael-Beukman/PCGNN/issues).
+# Citation
+If you find the generation method useful, consider citing this work:
+```
+@inproceedings{PCGNN,
+  title={Procedural Content Generation using Neuroevolution and Novelty Search for Diverse Video Game Levels},
+  author={Beukman, Michael and Christopher Cleghorn and James, Steven},
+  booktitle={Proceedings of the Genetic and Evolutionary Computation Conference},
+  year={2022},
+  month={July}
+}
+```
 
+The metrics were introduced here:
+```
+@article{a_star_metrics,
+  author    = {Michael Beukman and
+               Steven James and
+               Christopher W. Cleghorn},
+  title     = {Towards Objective Metrics for Procedurally Generated Video Game Levels},
+  journal   = {CoRR},
+  year      = {2022},
+  url       = {https://arxiv.org/abs/2201.10334},
+}
+```
 # Acknowledgements
 This work is based on the research supported wholly by the National Research Foundation of South Africa (Grant UID 133358).
