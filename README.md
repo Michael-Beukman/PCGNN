@@ -308,9 +308,7 @@ If you find the generation method useful, consider citing this work:
 The metrics were introduced here:
 ```
 @article{a_star_metrics,
-  author    = {Michael Beukman and
-               Steven James and
-               Christopher W. Cleghorn},
+  author={Beukman, Michael and James, Steven and Christopher Cleghorn},
   title     = {Towards Objective Metrics for Procedurally Generated Video Game Levels},
   journal   = {CoRR},
   year      = {2022},
