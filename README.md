@@ -101,7 +101,7 @@ The way novelty is calculated can be found in the report, or from the original p
 We compare levels by considering a few different distance functions, like the normalised [Hamming Distance](https://en.wikipedia.org/wiki/Hamming_distance) and [Image Hashing](https://github.com/JohannesBuchner/imagehash), but others can also be used.
 ## Get started
 To get started you would require a python environment, and `env.yml` is provided to quickly get started with Conda.
-Use it like: `conda create -f env.yml`. There is also another environment that is used specifically for interacting with the [gym_pcgrl](https://github.com/amidos2006/gym-pcgrl) codebase. If that is something you want to do, then create another environment from the `env_pcgrl.yml` file.
+Use it like: `conda env create -f env.yml`. There is also another environment that is used specifically for interacting with the [gym_pcgrl](https://github.com/amidos2006/gym-pcgrl) codebase. If that is something you want to do, then create another environment from the `env_pcgrl.yml` file.
 
 For full functionality, you will also need java installed. The `openjdk 16.0.1 2021-04-20` version worked well.
 
