@@ -112,7 +112,7 @@ At the moment, the easiest way to interact with the codebase would be to use the
 ### Generate Levels.
 To have a go at generating levels, then you can use the functions provided in `src/main/main.py`. Specifically you can call this (remember to be in the `src` directory before running these commands):
 ```
-./run.sh main/main.py --method noveltyneat --game mario --mode generate --width 114 --height 14
+./run.sh main/main.py --method noveltyneat --game mario --command generate --width 114 --height 14
 ```
 
 The above allows you to view some generated levels.
