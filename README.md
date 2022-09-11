@@ -45,7 +45,9 @@ This repository stores the code for two different projects. Firstly, a procedura
 If you just want to get started generating or playing levels, then please look at [how to generate levels](#generate-levels) or the [examples](#works-for-tilemaps). Also feel free to look at the [paper](https://arxiv.org/abs/2204.06934) or a [poster](https://github.com/Michael-Beukman/PCGNN/blob/main/doc/poster.pdf) that summarises our approach. For information about the metrics ([paper on Arxiv](https://arxiv.org/abs/2201.10334)) and how to use them, see [here](#metrics).
 ## General structure
 The main structure of the code is (hopefully) somewhat understandable.
-First of all, to run any python file in here, use `./run.sh path/to/python/file` instead of using `python` directly, because otherwise modules are not recognised.
+First of all, to run any python file in here, use `./run.sh path/to/python/file` instead of using `python` directly, because otherwise modules are not recognised. 
+
+Finally, the following commands should work on [wsl](https://docs.microsoft.com/en-us/windows/wsl/install) or Linux, but probably not on Windows (without some tweaking).
 
 Most code in here can be categorised into 3 main archetypes:
 1. **General / Method code.** This is how the methods were actually implemented, and these files don't do anything useful when run on their own.
