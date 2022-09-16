@@ -81,7 +81,6 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     elif game == 'larger_binary' or game == 'large_binary':
         kwargs['cropped_size'] = 40
     
-    assert kwargs['cropped_size'] == 40, "You make mistake"
     
     n = max_exp_idx(exp_name)
     global log_dir
